@@ -1,42 +1,82 @@
-
-import 'package:flet/flet.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:flet/flet.dart';
 
-class FletFlipCardControl extends StatelessWidget {
+class FletFlipCardControl extends StatefulWidget {
   final Control? parent;
   final Control control;
 
   const FletFlipCardControl({super.key, required this.parent, required this.control});
 
   @override
+  State<FletFlipCardControl> createState() => _FletFlipCardControlState();
+}
+
+class _FletFlipCardControlState extends State<FletFlipCardControl> {
+  final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.control.addInvokeMethodListener(_handleMethod);
+  }
+
+  Future<void> _handleMethod(String name, dynamic args) async {
+    switch (name) {
+      case "flip":
+        cardKey.currentState?.toggleCard();
+        break;
+      case "showFront":
+        if (cardKey.currentState?.isFront == false) {
+          cardKey.currentState?.toggleCard();
+        }
+        break;
+      case "showBack":
+        if (cardKey.currentState?.isFront == true) {
+          cardKey.currentState?.toggleCard();
+        }
+        break;
+      default:
+        throw Exception("Unknown method: $name");
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.control.removeInvokeMethodListener(_handleMethod);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint("FletFlipCard build: \${control.id}");
+    final FlipDirection direction =
+        widget.control.attrString("direction", "horizontal") == "vertical"
+            ? FlipDirection.VERTICAL
+            : FlipDirection.HORIZONTAL;
+    final bool showFront = widget.control.attrString("initialSide", "front") == "front";
 
-    var frontCtrl = childControl(control, "front");
-    var backCtrl = childControl(control, "back");
+    final frontCtrl = widget.control.child("front");
+    final backCtrl = widget.control.child("back");
 
-    var cardKey = GlobalKey<FlipCardState>();
+    final front = frontCtrl != null
+        ? createControlWidget(context, frontCtrl, widget.parent)!
+        : const SizedBox.shrink();
+    final back = backCtrl != null
+        ? createControlWidget(context, backCtrl, widget.parent)!
+        : const SizedBox.shrink();
 
-    control.state["_cardKey"] = cardKey;
-
-    var front = frontCtrl != null ? createControlWidget(context, frontCtrl, parent)! : const SizedBox.shrink();
-    var back = backCtrl != null ? createControlWidget(context, backCtrl, parent)! : const SizedBox.shrink();
-
-    FlipDirection direction = control.attrString("direction") == "VERTICAL"
-        ? FlipDirection.VERTICAL
-        : FlipDirection.HORIZONTAL;
-
-    bool isInitiallyFlipped = control.attrBool("flipped", false)!;
-
-    var flipCard = FlipCard(
-      key: cardKey,
-      direction: direction,
-      flipOnTouch: control.attrBool("flipOnTouch", true)!,
-      front: front,
-      back: back,
+    return constrainedControl(
+      context,
+      FlipCard(
+        key: cardKey,
+        direction: direction,
+        side: showFront ? CardSide.FRONT : CardSide.BACK,
+        front: front,
+        back: back,
+      ),
+      widget.parent,
+      widget.control,
     );
-
-    return constrainedControl(context, flipCard, parent, control);
   }
 }

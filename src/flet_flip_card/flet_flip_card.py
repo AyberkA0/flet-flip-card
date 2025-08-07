@@ -1,50 +1,41 @@
-import asyncio
-from typing import Literal, Optional
-
 import flet as ft
+from typing import Optional
 
-
-@ft.control("flet_flip_card")
 class FlipCard(ft.Control):
-    """
-    A flip card control that supports front and back sides.
-    """
-
     def __init__(
         self,
         front: Optional[ft.Control] = None,
         back: Optional[ft.Control] = None,
-        initial_side: Literal["front", "back"] = "back",
-        direction: Literal["horizontal", "vertical"] = "horizontal",
+        flip_on_click: bool = True,
+        initial_side: str = "front",
+        flip_direction: str = "horizontal",
         **kwargs,
     ):
         super().__init__(**kwargs)
+        self._front = front
+        self._back = back
+        self.flip_on_click = flip_on_click
         self.initial_side = initial_side
-        self.direction = direction
-        if front:
-            self._set_attr("front", True)
-            self.controls.append(front)
-        if back:
-            self._set_attr("back", True)
-            self.controls.append(back)
+        self.flip_direction = flip_direction
 
-    initial_side: Literal["front", "back"]
-    direction: Literal["horizontal", "vertical"]
+    def _get_control_name(self):
+        return "flet_flip_card"
 
-    async def flip_async(self, timeout: Optional[float] = 10):
-        await self._invoke_method_async("flip", timeout=timeout)
+    def build(self):
+        result = []
+        if self._front:
+            self._front._name = "front"
+            result.append(self._front)
+        if self._back:
+            self._back._name = "back"
+            result.append(self._back)
+        return result
 
-    def flip(self, timeout: Optional[float] = 10):
-        asyncio.create_task(self.flip_async(timeout))
+    def flip(self):
+        self.invoke_method("flip")
 
-    async def show_front_async(self, timeout: Optional[float] = 10):
-        await self._invoke_method_async("showFront", timeout=timeout)
+    def show_front(self):
+        self.invoke_method("showFront")
 
-    def show_front(self, timeout: Optional[float] = 10):
-        asyncio.create_task(self.show_front_async(timeout))
-
-    async def show_back_async(self, timeout: Optional[float] = 10):
-        await self._invoke_method_async("showBack", timeout=timeout)
-
-    def show_back(self, timeout: Optional[float] = 10):
-        asyncio.create_task(self.show_back_async(timeout))
+    def show_back(self):
+        self.invoke_method("showBack")

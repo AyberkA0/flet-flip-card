@@ -1,4 +1,3 @@
-
 import 'package:flet/flet.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flip_card/flip_card.dart';
@@ -15,23 +14,14 @@ class FlipCardService extends FletService {
     control.addInvokeMethodListener(_invokeMethod);
   }
 
-  Future<dynamic> _invokeMethod(String name, dynamic args) async {
+  Future<void> _invokeMethod(String name, dynamic args) async {
     switch (name) {
       case "flip":
         _cardKey?.currentState?.toggleCard();
-        return null;
-      case "showFront":
-        if (_cardKey?.currentState?.isFront == false) {
-          _cardKey?.currentState?.toggleCard();
-        }
-        return null;
-      case "showBack":
-        if (_cardKey?.currentState?.isFront == true) {
-          _cardKey?.currentState?.toggleCard();
-        }
-        return null;
+        break;
+      // showFront/back logic if needed
       default:
-        throw Exception("Unknown FlipCard method: \$name");
+        throw Exception("Unknown FlipCard method: $name");
     }
   }
 
