@@ -7,8 +7,20 @@ import 'package:flutter/material.dart';
 class FletFlipCardControl extends StatefulWidget {
   final Control? parent;
   final Control control;
+  final List<Control> children;
+  final FletControlBackend backend;
+  final PageStore pageStore;
+  final ThemeData theme;
 
-  const FletFlipCardControl({super.key, required this.parent, required this.control});
+  const FletFlipCardControl({
+    super.key,
+    required this.parent,
+    required this.control,
+    required this.children,
+    required this.backend,
+    required this.pageStore,
+    required this.theme,
+  });
 
   @override
   State<FletFlipCardControl> createState() => _FletFlipCardControlState();
@@ -65,7 +77,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> with SingleTi
     final flipDirection = control.attrString("flipDirection", "horizontal")!.toLowerCase();
     final autoFlipMs = control.attrInt("autoFlipMs");
 
-    // initialize once depending on initialSide
     _showFront = initialSide != "back";
     _applyAutoTimer(autoFlipMs);
 
@@ -91,14 +102,21 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> with SingleTi
     final backCtrls = widget.children.where((c) => c.name == "back" && c.isVisible).toList();
 
     Widget frontChild = frontCtrls.isNotEmpty
-        ? createControl(frontCtrls.first, context, widget.backend, widget.pageStore, widget.theme)
+        ? widget.backend.createControl(
+            frontCtrls.first,
+            parent: widget.control,
+            parentDisabled: !widget.control.isEnabled,
+          )
         : const SizedBox.shrink();
 
     Widget backChild = backCtrls.isNotEmpty
-        ? createControl(backCtrls.first, context, widget.backend, widget.pageStore, widget.theme)
+        ? widget.backend.createControl(
+            backCtrls.first,
+            parent: widget.control,
+            parentDisabled: !widget.control.isEnabled,
+          )
         : const SizedBox.shrink();
 
-    // flip animation
     final animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     Widget card = AnimatedBuilder(
