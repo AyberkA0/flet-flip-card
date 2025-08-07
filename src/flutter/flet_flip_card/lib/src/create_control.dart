@@ -1,21 +1,16 @@
 import 'package:flet/flet.dart';
+
 import 'flet_flip_card.dart';
-import 'flip_card_service.dart';
 
 CreateControlFactory createControl = (CreateControlArgs args) {
-  if (args.control.type == "flet_flip_card") {
-    return FletFlipCardControl(parent: args.parent, control: args.control);
+  switch (args.control.type) {
+    case "flet_flip_card":
+      return FletFlipCardControl(control: args.control, parent: args.parent);
+    default:
+      return null;
   }
-  return null;
-};
-
-CreateServiceFactory? createService = (CreateServiceArgs args) {
-  if (args.control.type == "flet_flip_card") {
-    return FlipCardService(control: args.control);
-  }
-  return null;
 };
 
 void ensureInitialized() {
-  // extension init code (none needed here)
+  // Nothing to initialize
 }

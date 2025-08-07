@@ -1,1 +1,1 @@
-from flet_flip_card.flet_flip_card import FlipCard
+from flet_flip_card.flet_flip_card import FletFlipCard

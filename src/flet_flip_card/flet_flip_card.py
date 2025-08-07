@@ -1,41 +1,36 @@
 import flet as ft
 from typing import Optional
 
-class FlipCard(ft.Control):
+
+class FletFlipCard(ft.Control):
+    """
+    A flip card control that automatically flips every 5 seconds.
+    """
+
     def __init__(
         self,
         front: Optional[ft.Control] = None,
         back: Optional[ft.Control] = None,
-        flip_on_click: bool = True,
-        initial_side: str = "front",
-        flip_direction: str = "horizontal",
-        **kwargs,
+        visible: bool = True,
+        disabled: bool = False,
+        data: Optional[str] = None,
     ):
-        super().__init__(**kwargs)
+        super().__init__()
         self._front = front
         self._back = back
-        self.flip_on_click = flip_on_click
-        self.initial_side = initial_side
-        self.flip_direction = flip_direction
+        self.visible = visible
+        self.disabled = disabled
+        self.data = data
 
     def _get_control_name(self):
         return "flet_flip_card"
 
-    def build(self):
-        result = []
-        if self._front:
-            self._front._name = "front"
-            result.append(self._front)
-        if self._back:
-            self._back._name = "back"
-            result.append(self._back)
-        return result
-
-    def flip(self):
-        self.invoke_method("flip")
-
-    def show_front(self):
-        self.invoke_method("showFront")
-
-    def show_back(self):
-        self.invoke_method("showBack")
+    def _get_children(self):
+        children = []
+        if self._front is not None:
+            self._front._set_attr_internal("name", "front")
+            children.append(self._front)
+        if self._back is not None:
+            self._back._set_attr_internal("name", "back")
+            children.append(self._back)
+        return children
