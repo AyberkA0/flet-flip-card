@@ -1,0 +1,7 @@
+site_name: FletFlipCard
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
