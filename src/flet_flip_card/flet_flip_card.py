@@ -7,7 +7,7 @@ class FlipDirection(Enum):
     HORIZONTAL = "horizontal"
     VERTICAL = "vertical"
 
-class FlipCard(ConstrainedControl):
+class FletFlipCard(ConstrainedControl):
     def __init__(
         self,
         front: Optional[ConstrainedControl] = None,
