@@ -8,18 +8,12 @@ class FletFlipCardControl extends StatefulWidget {
   final Control? parent;
   final Control control;
   final List<Control> children;
-  final FletControlBackend backend;
-  final PageStore pageStore;
-  final ThemeData theme;
 
   const FletFlipCardControl({
     super.key,
     required this.parent,
     required this.control,
     required this.children,
-    required this.backend,
-    required this.pageStore,
-    required this.theme,
   });
 
   @override
@@ -102,19 +96,11 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> with SingleTi
     final backCtrls = widget.children.where((c) => c.name == "back" && c.isVisible).toList();
 
     Widget frontChild = frontCtrls.isNotEmpty
-        ? widget.backend.createControl(
-            frontCtrls.first,
-            parent: widget.control,
-            parentDisabled: !widget.control.isEnabled,
-          )
+        ? createControl(widget.control, frontCtrls.first.id, false)
         : const SizedBox.shrink();
 
     Widget backChild = backCtrls.isNotEmpty
-        ? widget.backend.createControl(
-            backCtrls.first,
-            parent: widget.control,
-            parentDisabled: !widget.control.isEnabled,
-          )
+        ? createControl(widget.control, backCtrls.first.id, false)
         : const SizedBox.shrink();
 
     final animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
