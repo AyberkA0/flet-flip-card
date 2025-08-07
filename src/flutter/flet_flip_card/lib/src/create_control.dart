@@ -1,13 +1,15 @@
+
 import 'package:flet/flet.dart';
-import 'flet_flip_card.dart';
+
+import 'src/flet_flip_card.dart';
+import 'src/flip_card_service.dart';
 
 CreateControlFactory createControl = (CreateControlArgs args) {
   switch (args.control.type) {
-    case "flip_card":
+    case "flet_flip_card":
       return FletFlipCardControl(parent: args.parent, control: args.control);
-    default:
-      return null;
   }
+  return null;
 };
 
 void ensureInitialized() {}
