@@ -2,9 +2,6 @@ from enum import Enum
 from typing import Any, Optional
 
 from flet.core.constrained_control import ConstrainedControl
-from flet.core.control import OptionalNumber
-
-from enum import Enum
 
 class FlipDirection(Enum):
     HORIZONTAL = "horizontal"
@@ -24,7 +21,7 @@ class FlipCard(ConstrainedControl):
         self.direction = direction
 
     def _get_control_name(self):
-        return "flip_card"
+        return "flet_flip_card"
 
     def _get_children(self):
         children = []
@@ -36,7 +33,6 @@ class FlipCard(ConstrainedControl):
             children.append(self.__back)
         return children
 
-    # direction
     @property
     def direction(self) -> FlipDirection:
         return self.__direction

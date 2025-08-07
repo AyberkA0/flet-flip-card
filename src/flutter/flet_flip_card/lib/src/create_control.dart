@@ -6,8 +6,8 @@ CreateControlFactory createControl = (CreateControlArgs args) {
   switch (args.control.type) {
     case "flet_flip_card":
       return FletFlipCardControl(
-        parent: args.parent,
-        control: args.control,
+        parent: parent, 
+        control: control
       );
     default:
       return null;
