@@ -1,9 +1,3 @@
-// Flet Extension Development Guide’a uygun, 0.28.3 uyumlu minimal wrapper.
-// - Sadece front/back çocukları
-// - Dokununca flip
-// - Python->Dart method çağrıları: flip, show_front, show_back
-// - Event tetikleme örneği: "flipped"
-
 import 'dart:async';
 
 import 'package:flet/flet.dart';
@@ -39,7 +33,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
   @override
   void initState() {
     super.initState();
-    // Python->Dart method kayıt (Guide: subscribeMethods/unsubscribeMethods)
     widget.backend.subscribeMethods(widget.control.id, _onMethodCall);
   }
 
@@ -49,7 +42,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     super.dispose();
   }
 
-  // Guide: Method handler imzası
   Future<String?> _onMethodCall(String methodName, Map<String, String> args) async {
     switch (methodName) {
       case "flip":
@@ -88,7 +80,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
 
   @override
   Widget build(BuildContext context) {
-    // Çocukları isimle bul (Guide: children + createControl)
     final frontCtrl = widget.children.where((c) => c.name == "front" && c.isVisible);
     final backCtrl = widget.children.where((c) => c.name == "back" && c.isVisible);
 
@@ -122,7 +113,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
       speed: 400,
       onFlipDone: (isFront) {
         _showingFront = isFront;
-        // Guide: triggerControlEvent(controlId, eventName, data)
         widget.backend.triggerControlEvent(
           widget.control.id,
           "flipped",
@@ -133,7 +123,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
       back: back,
     );
 
-    // Guide: constrainedControl ile sarmala
     return constrainedControl(context, card, widget.parent, widget.control);
   }
 }

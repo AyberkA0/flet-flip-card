@@ -1,14 +1,10 @@
-// Flet 0.28.3 uzantı fabrikası (doc pattern):
-// - CreateControlFactory createControl
-// - ensureInitialized()
-
 import 'package:flet/flet.dart';
 
 import 'flet_flip_card.dart';
 
 @pragma('vm:entry-point')
 void ensureInitialized() {
-  // Bu sürümde özel init gerekmiyor; boş bırakıyoruz.
+
 }
 
 @pragma('vm:entry-point')
