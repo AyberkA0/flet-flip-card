@@ -21,22 +21,19 @@ class FlipInitialSide(str, Enum):
 
 class FlipCard(ConstrainedControl):
     """
-    Flet FlipCard Control - iki yüzlü kart.
-
-    Özellikler:
-      - direction: "horizontal" | "vertical"
-      - initial_side: "front" | "back"
-      - flip_on_touch: bool
-      - auto_flip_interval_ms: Optional[int]
-
-    Çocuklar:
-      - front: ön yüz kontrolü
-      - back: arka yüz kontrolü
+    Flet FlipCard Control (Flet 0.28.3 uyumlu).
+    - front/back: Flet kontrolleri
+    - direction: "horizontal" | "vertical"
+    - initial_side: "front" | "back"
+    - flip_on_touch: bool
+    - auto_flip_interval_ms: Optional[int]
     """
 
     def __init__(
         self,
-        # ---- ConstrainedControl ortak özellikler ----
+        #
+        # ConstrainedControl ortak
+        #
         width: OptionalNumber = None,
         height: OptionalNumber = None,
         opacity: OptionalNumber = None,
@@ -49,7 +46,8 @@ class FlipCard(ConstrainedControl):
         expand: Optional[bool | int] = None,
         data: Any = None,
         #
-        # ---- FlipCard özgü ----
+        # FlipCard özel
+        #
         front: Optional[Control] = None,
         back: Optional[Control] = None,
         direction: FlipDirection | str = FlipDirection.HORIZONTAL,
@@ -57,7 +55,7 @@ class FlipCard(ConstrainedControl):
         flip_on_touch: bool = False,
         auto_flip_interval_ms: Optional[int] = None,
         #
-        # ---- Etkinlikler ----
+        # Eventler
         on_flipped: Optional[Callable[[ControlEvent], None]] = None,
     ):
         ConstrainedControl.__init__(
@@ -85,19 +83,11 @@ class FlipCard(ConstrainedControl):
         if on_flipped is not None:
             self.on_flipped = on_flipped  # type: ignore[assignment]
 
-    # ---- Yardımcılar ----
-    def _set_attr_bool(self, name: str, value: Optional[bool]):
-        if value is None:
-            self._set_attr(name, None)
-        else:
-            # Flet dart tarafında "true"/"false" bekler
-            self._set_attr(name, "true" if value else "false")
-
     # ---- Control adı ----
     def _get_control_name(self) -> str:
         return "flet_flip_card"
 
-    # ---- Çocukları bildir ----
+    # ---- Çocuklar ----
     def _get_children(self) -> List[Control]:
         children: List[Control] = []
         if self.front:
@@ -108,7 +98,7 @@ class FlipCard(ConstrainedControl):
             children.append(self.back)
         return children
 
-    # ---- Güncelleme öncesi ----
+    # ---- Güncelleme ----
     def before_update(self):
         super().before_update()
         self._set_attr(
@@ -116,16 +106,16 @@ class FlipCard(ConstrainedControl):
             self.direction.value if isinstance(self.direction, Enum) else self.direction,
         )
         self._set_attr(
-            "initialSide",
+            "initial_side",
             self.initial_side.value if isinstance(self.initial_side, Enum) else self.initial_side,
         )
-        self._set_attr_bool("flipOnTouch", self.flip_on_touch)
-        if self.auto_flip_interval_ms is not None:
-            self._set_attr("autoFlipIntervalMs", int(self.auto_flip_interval_ms))
+        self._set_attr("flip_on_touch", bool(self.flip_on_touch))
+        if self.auto_flip_interval_ms is None:
+            self._set_attr("auto_flip_interval_ms", None)
         else:
-            self._set_attr("autoFlipIntervalMs", None)
+            self._set_attr("auto_flip_interval_ms", int(self.auto_flip_interval_ms))
 
-    # ---- Etkinlikler ----
+    # ---- Event ----
     @property
     def on_flipped(self):
         return self._get_event_handler("flipped")
@@ -134,7 +124,7 @@ class FlipCard(ConstrainedControl):
     def on_flipped(self, handler):
         self._add_event_handler("flipped", handler)
 
-    # ---- Yöntem çağrıları (Python -> Flutter) ----
+    # ---- Python -> Flutter method çağrıları ----
     def flip(self):
         self.invoke_method("flip")
 
@@ -144,7 +134,7 @@ class FlipCard(ConstrainedControl):
     def show_back(self):
         self.invoke_method("show_back")
 
-    # ---- Özellik erişimcileri ----
+    # ---- Özellikler ----
     @property
     def direction(self) -> str | FlipDirection:
         v = self._get_attr("direction")
@@ -156,29 +146,29 @@ class FlipCard(ConstrainedControl):
 
     @property
     def initial_side(self) -> str | FlipInitialSide:
-        v = self._get_attr("initialSide")
+        v = self._get_attr("initial_side")
         return FlipInitialSide(v) if isinstance(v, str) and v in ("front", "back") else v
 
     @initial_side.setter
     def initial_side(self, value: str | FlipInitialSide):
-        self._set_attr("initialSide", value.value if isinstance(value, FlipInitialSide) else value)
+        self._set_attr("initial_side", value.value if isinstance(value, FlipInitialSide) else value)
 
     @property
     def flip_on_touch(self) -> bool:
-        return bool(self._get_attr("flipOnTouch", False))
+        return bool(self._get_attr("flip_on_touch", False))
 
     @flip_on_touch.setter
     def flip_on_touch(self, value: bool):
-        self._set_attr_bool("flipOnTouch", value)
+        self._set_attr("flip_on_touch", bool(value))
 
     @property
     def auto_flip_interval_ms(self) -> Optional[int]:
-        v = self._get_attr("autoFlipIntervalMs")
+        v = self._get_attr("auto_flip_interval_ms")
         return int(v) if v is not None else None
 
     @auto_flip_interval_ms.setter
     def auto_flip_interval_ms(self, value: Optional[int]):
         if value is None:
-            self._set_attr("autoFlipIntervalMs", None)
+            self._set_attr("auto_flip_interval_ms", None)
         else:
-            self._set_attr("autoFlipIntervalMs", int(value))
+            self._set_attr("auto_flip_interval_ms", int(value))
