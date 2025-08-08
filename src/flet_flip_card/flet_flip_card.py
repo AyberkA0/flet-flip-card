@@ -3,10 +3,11 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Callable, List, Optional
 
+from flet import ControlEvent
 from flet.core.constrained_control import ConstrainedControl
 from flet.core.control import Control
 from flet.core.types import OptionalNumber
-from flet import ControlEvent
+
 
 class FlipDirection(str, Enum):
     HORIZONTAL = "horizontal"
@@ -84,15 +85,19 @@ class FlipCard(ConstrainedControl):
         if on_flipped is not None:
             self.on_flipped = on_flipped  # type: ignore[assignment]
 
-    # ---- Control adını sabitle ----
-    def _get_control_name(self) -> str:
-        return "flet_flip_card"
-    
-    def _set_attr_bool(self, name: str, value: bool | None):
-        if value is not None:
+    # ---- Yardımcılar ----
+    def _set_attr_bool(self, name: str, value: Optional[bool]):
+        if value is None:
+            self._set_attr(name, None)
+        else:
+            # Flet dart tarafında "true"/"false" bekler
             self._set_attr(name, "true" if value else "false")
 
-    # ---- Çocukları adlandırarak bildir ----
+    # ---- Control adı ----
+    def _get_control_name(self) -> str:
+        return "flet_flip_card"
+
+    # ---- Çocukları bildir ----
     def _get_children(self) -> List[Control]:
         children: List[Control] = []
         if self.front:
@@ -103,12 +108,17 @@ class FlipCard(ConstrainedControl):
             children.append(self.back)
         return children
 
-    # ---- Güncelleme öncesi (json/attrs) ----
+    # ---- Güncelleme öncesi ----
     def before_update(self):
         super().before_update()
-        # basit tipler doğrudan attr olarak
-        self._set_attr("direction", (self.direction.value if isinstance(self.direction, Enum) else self.direction))
-        self._set_attr("initialSide", (self.initial_side.value if isinstance(self.initial_side, Enum) else self.initial_side))
+        self._set_attr(
+            "direction",
+            self.direction.value if isinstance(self.direction, Enum) else self.direction,
+        )
+        self._set_attr(
+            "initialSide",
+            self.initial_side.value if isinstance(self.initial_side, Enum) else self.initial_side,
+        )
         self._set_attr_bool("flipOnTouch", self.flip_on_touch)
         if self.auto_flip_interval_ms is not None:
             self._set_attr("autoFlipIntervalMs", int(self.auto_flip_interval_ms))
@@ -126,7 +136,6 @@ class FlipCard(ConstrainedControl):
 
     # ---- Yöntem çağrıları (Python -> Flutter) ----
     def flip(self):
-        # Senkron sarmalayıcı; arka planda async olabilir.
         self.invoke_method("flip")
 
     def show_front(self):
@@ -136,7 +145,6 @@ class FlipCard(ConstrainedControl):
         self.invoke_method("show_back")
 
     # ---- Özellik erişimcileri ----
-    # direction
     @property
     def direction(self) -> str | FlipDirection:
         v = self._get_attr("direction")
@@ -146,7 +154,6 @@ class FlipCard(ConstrainedControl):
     def direction(self, value: str | FlipDirection):
         self._set_attr("direction", value.value if isinstance(value, FlipDirection) else value)
 
-    # initial_side
     @property
     def initial_side(self) -> str | FlipInitialSide:
         v = self._get_attr("initialSide")
@@ -156,7 +163,6 @@ class FlipCard(ConstrainedControl):
     def initial_side(self, value: str | FlipInitialSide):
         self._set_attr("initialSide", value.value if isinstance(value, FlipInitialSide) else value)
 
-    # flip_on_touch
     @property
     def flip_on_touch(self) -> bool:
         return bool(self._get_attr("flipOnTouch", False))
@@ -165,7 +171,6 @@ class FlipCard(ConstrainedControl):
     def flip_on_touch(self, value: bool):
         self._set_attr_bool("flipOnTouch", value)
 
-    # auto_flip_interval_ms
     @property
     def auto_flip_interval_ms(self) -> Optional[int]:
         v = self._get_attr("autoFlipIntervalMs")
