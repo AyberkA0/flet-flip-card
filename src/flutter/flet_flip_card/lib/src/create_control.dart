@@ -1,10 +1,8 @@
 import 'package:flet/flet.dart';
-import 'package:flutter/widgets.dart';
-
 import 'flet_flip_card.dart';
 
 CreateControlFactory createControl = (CreateControlArgs args) {
-  if (args.control.type == "flip_card") {
+  if (args.control.type == 'flip_card') {
     return FletFlipCardControl(
       parent: args.parent,
       control: args.control,
