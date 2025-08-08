@@ -1,65 +1,57 @@
+// Flet Extension Development Guide’a uygun, 0.28.3 uyumlu minimal wrapper.
+// - Sadece front/back çocukları
+// - Dokununca flip
+// - Python->Dart method çağrıları: flip, show_front, show_back
+// - Event tetikleme örneği: "flipped"
+
 import 'dart:async';
+
 import 'package:flet/flet.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
-/// Flet 0.28.3 için: çocukları `control.buildWidget("front"/"back")` ile al.
-/// Method çağrıları için `control.addInvokeMethodListener(...)` kullan.
 class FletFlipCardControl extends StatefulWidget {
   final Control? parent;
   final Control control;
+  final List<Control> children;
+  final bool parentDisabled;
+  final bool? parentAdaptive;
+  final FletControlBackend backend;
 
   const FletFlipCardControl({
     super.key,
     required this.parent,
     required this.control,
+    required this.children,
+    required this.parentDisabled,
+    required this.parentAdaptive,
+    required this.backend,
   });
 
   @override
-  State<FletFlipCardControl> createState() => _FletFlipCardState();
+  State<FletFlipCardControl> createState() => _FletFlipCardControlState();
 }
 
-class _FletFlipCardState extends State<FletFlipCardControl> {
+class _FletFlipCardControlState extends State<FletFlipCardControl> {
   final GlobalKey<FlipCardState> _flipKey = GlobalKey<FlipCardState>();
-  Timer? _autoTimer;
   bool _showingFront = true;
 
   @override
   void initState() {
     super.initState();
-
-    // Başlangıç yüzü
-    final initialSide = widget.control.getString("initial_side", "front")!;
-    _showingFront = initialSide != "back";
-
-    // Python -> Flutter method dinleyici
-    widget.control.addInvokeMethodListener(_onInvokeMethod);
-
-    // Otomatik flip
-    final autoMs = widget.control.getInt("auto_flip_interval_ms");
-    if (autoMs != null && autoMs > 0) {
-      _autoTimer = Timer.periodic(Duration(milliseconds: autoMs), (_) {
-        _toggle();
-      });
-    }
-
-    // initial_side="back" ise ilk frame'de çevir
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_showingFront && mounted) {
-        _flipKey.currentState?.toggleCard();
-      }
-    });
+    // Python->Dart method kayıt (Guide: subscribeMethods/unsubscribeMethods)
+    widget.backend.subscribeMethods(widget.control.id, _onMethodCall);
   }
 
   @override
   void dispose() {
-    _autoTimer?.cancel();
-    widget.control.removeInvokeMethodListener(_onInvokeMethod);
+    widget.backend.unsubscribeMethods(widget.control.id);
     super.dispose();
   }
 
-  Future<dynamic> _onInvokeMethod(String name, dynamic args) async {
-    switch (name) {
+  // Guide: Method handler imzası
+  Future<String?> _onMethodCall(String methodName, Map<String, String> args) async {
+    switch (methodName) {
       case "flip":
         _toggle();
         break;
@@ -77,8 +69,6 @@ class _FletFlipCardState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null) {
       st.toggleCard();
-      _showingFront = !_showingFront;
-      widget.control.triggerEvent("flipped", _showingFront ? "front" : "back");
     }
   }
 
@@ -86,8 +76,6 @@ class _FletFlipCardState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null && !_showingFront) {
       st.toggleCard();
-      _showingFront = true;
-      widget.control.triggerEvent("flipped", "front");
     }
   }
 
@@ -95,37 +83,57 @@ class _FletFlipCardState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null && _showingFront) {
       st.toggleCard();
-      _showingFront = false;
-      widget.control.triggerEvent("flipped", "back");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final dirStr = widget.control.getString("direction", "horizontal")!;
-    final flipOnTouch = widget.control.getBool("flip_on_touch", false)!;
+    // Çocukları isimle bul (Guide: children + createControl)
+    final frontCtrl = widget.children.where((c) => c.name == "front" && c.isVisible);
+    final backCtrl = widget.children.where((c) => c.name == "back" && c.isVisible);
 
-    // front/back widget'ları
-    final frontWidget = widget.control.buildWidget("front") ?? const SizedBox.shrink();
-    final backWidget = widget.control.buildWidget("back") ?? const SizedBox.shrink();
+    final bool disabled = widget.control.isDisabled || widget.parentDisabled;
+    final bool? adaptive = widget.control.attrBool("adaptive") ?? widget.parentAdaptive;
 
-    final direction = dirStr.toLowerCase() == "vertical"
-        ? FlipDirection.VERTICAL
-        : FlipDirection.HORIZONTAL;
+    Widget front = const SizedBox.shrink();
+    if (frontCtrl.isNotEmpty) {
+      front = createControl(
+        widget.control,
+        frontCtrl.first.id,
+        disabled,
+        parentAdaptive: adaptive,
+      )!;
+    }
+
+    Widget back = const SizedBox.shrink();
+    if (backCtrl.isNotEmpty) {
+      back = createControl(
+        widget.control,
+        backCtrl.first.id,
+        disabled,
+        parentAdaptive: adaptive,
+      )!;
+    }
 
     final card = FlipCard(
       key: _flipKey,
-      direction: direction,
-      flipOnTouch: flipOnTouch,
+      direction: FlipDirection.HORIZONTAL,
+      flipOnTouch: true,
+      speed: 400,
       onFlipDone: (isFront) {
         _showingFront = isFront;
-        widget.control.triggerEvent("flipped", isFront ? "front" : "back");
+        // Guide: triggerControlEvent(controlId, eventName, data)
+        widget.backend.triggerControlEvent(
+          widget.control.id,
+          "flipped",
+          isFront ? "front" : "back",
+        );
       },
-      front: frontWidget,
-      back: backWidget,
-      speed: 400,
+      front: front,
+      back: back,
     );
 
+    // Guide: constrainedControl ile sarmala
     return constrainedControl(context, card, widget.parent, widget.control);
   }
 }
