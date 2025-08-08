@@ -87,6 +87,10 @@ class FlipCard(ConstrainedControl):
     # ---- Control adını sabitle ----
     def _get_control_name(self) -> str:
         return "flet_flip_card"
+    
+    def _set_attr_bool(self, name: str, value: bool | None):
+        if value is not None:
+            self._set_attr(name, "true" if value else "false")
 
     # ---- Çocukları adlandırarak bildir ----
     def _get_children(self) -> List[Control]:
