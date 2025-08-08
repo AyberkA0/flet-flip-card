@@ -33,21 +33,13 @@ class _FletFlipCardState extends State<FletFlipCard> {
   @override
   void initState() {
     super.initState();
-    _cid = widget.control.id;
-    _flipOnTouch = widget.control.attrBool("flip_on_touch", false)!;
-    _flipDirection = widget.control.attrString("direction") == "vertical"
-        ? FlipDirection.VERTICAL
-        : FlipDirection.HORIZONTAL;
-    _showingFront = widget.control.attrString("initial_side") != "back";
+    widget.control.methodCallHandler = _onMethodCall;
+  }
 
-    final autoFlipMs = widget.control.attrInt("auto_flip_interval_ms");
-    if (autoFlipMs != null && autoFlipMs > 0) {
-      _autoFlipTimer = Timer.periodic(Duration(milliseconds: autoFlipMs), (_) {
-        _cardKey.currentState?.toggleCard();
-      });
-    }
-
-    widget.backend.registerMethodHandler(_cid, _onMethodCall);
+  @override
+  void dispose() {
+    widget.control.methodCallHandler = null;
+    super.dispose();
   }
 
   Future<String?> _onMethodCall(String method, Map<String, dynamic> params) async {
@@ -63,13 +55,6 @@ class _FletFlipCardState extends State<FletFlipCard> {
         break;
     }
     return null;
-  }
-
-  @override
-  void dispose() {
-    _autoFlipTimer?.cancel();
-    widget.backend.unregisterMethodHandler(_cid);
-    super.dispose();
   }
 
   @override
