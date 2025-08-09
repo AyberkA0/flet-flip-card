@@ -118,6 +118,9 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
 
     final String? initialSide = widget.control.attrString("initialSide", "front");
     final CardSide side = initialSide == "back" ? CardSide.BACK : CardSide.FRONT;
+    if (side == CardSide.BACK) {
+      _showingFront = false;
+    }
 
     final card = FlipCard(
       key: _flipKey,
