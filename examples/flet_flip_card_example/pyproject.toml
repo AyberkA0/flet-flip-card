@@ -8,8 +8,8 @@ authors = [
     { name = "Flet developer", email = "you@example.com" }
 ]
 dependencies = [
-  "flet-flip-card",
   "flet>=0.28.3",
+  "flet-flip-card @ git+https://github.com/AyberkAtalay0/flet-flip-card",
 ]
 
 [tool.flet]
