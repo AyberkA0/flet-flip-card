@@ -6,6 +6,22 @@ A simple and lightweight **Flip Card** extension for [Flet](https://flet.dev), a
 
 ---
 
+## ✨ Features
+- **Front & Back** card faces
+- **Horizontal** and **Vertical** flip directions
+- **Custom flip speed**
+- **Programmatic control**: flip, show front side, show back side
+- **Flip event callback** (`on_flip_done`)
+
+---
+
+## ⚠️ Important Note
+When running your app without building the extension using `flet build ...`,  
+you will **only see a placeholder** instead of the actual flip card widget.  
+To see the real widget, you must build the extension for your target platform.
+
+---
+
 ## 📦 Installation
 
 Install directly from GitHub:

@@ -27,7 +27,7 @@ class FletFlipCardControl extends StatefulWidget {
 
 class _FletFlipCardControlState extends State<FletFlipCardControl> {
   final GlobalKey<FlipCardState> _flipKey = GlobalKey<FlipCardState>();
-  bool _showingFront = true;
+  bool _showingFront = false;
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     final card = FlipCard(
       key: _flipKey,
       direction: direction,
-      flipOnTouch: true,
+      flipOnTouch: false,
       speed: speed,
       onFlipDone: (isFront) {
         _showingFront = isFront;
