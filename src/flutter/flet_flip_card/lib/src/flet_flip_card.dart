@@ -110,7 +110,7 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
           widget.backend.triggerControlEvent(
             widget.control.id,
             "flip_done",
-            isFront ? "front" : "back",
+            isFront ? "back" : "front",
           );
         }
       },
