@@ -33,6 +33,14 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
   void initState() {
     super.initState();
     widget.backend.subscribeMethods(widget.control.id, _onMethodCall);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final String? initialSide =
+          widget.control.attrString("initialSide", "front");
+      if (initialSide == "back") {
+        _flipKey.currentState?.toggleCard();
+      }
+    });
   }
 
   @override
@@ -41,7 +49,8 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     super.dispose();
   }
 
-  Future<String?> _onMethodCall(String methodName, Map<String, String> args) async {
+  Future<String?> _onMethodCall(
+      String methodName, Map<String, String> args) async {
     switch (methodName) {
       case "flip":
         _toggle();
@@ -65,25 +74,28 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
 
   void _showBack() {
     final st = _flipKey.currentState;
-    if (st != null && !_showingFront) {
+    if (st != null && _showingFront) {
       st.toggleCard();
     }
   }
 
   void _showFront() {
     final st = _flipKey.currentState;
-    if (st != null && _showingFront) {
+    if (st != null && !_showingFront) {
       st.toggleCard();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final frontCtrl = widget.children.where((c) => c.name == "front" && c.isVisible);
-    final backCtrl = widget.children.where((c) => c.name == "back" && c.isVisible);
+    final frontCtrl =
+        widget.children.where((c) => c.name == "front" && c.isVisible);
+    final backCtrl =
+        widget.children.where((c) => c.name == "back" && c.isVisible);
 
     final bool disabled = widget.control.isDisabled || widget.parentDisabled;
-    final bool? adaptive = widget.control.attrBool("adaptive") ?? widget.parentAdaptive;
+    final bool? adaptive =
+        widget.control.attrBool("adaptive") ?? widget.parentAdaptive;
 
     Widget front = const SizedBox.shrink();
     if (frontCtrl.isNotEmpty) {
@@ -105,7 +117,8 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
       )!;
     }
 
-    final String? dirStr = widget.control.attrString("direction", "horizontal");
+    final String? dirStr =
+        widget.control.attrString("direction", "horizontal");
     final FlipDirection direction =
         dirStr == "vertical" ? FlipDirection.VERTICAL : FlipDirection.HORIZONTAL;
 
