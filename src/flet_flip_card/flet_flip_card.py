@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 from flet.core.constrained_control import ConstrainedControl
 from flet.core.types import OptionalNumber, OptionalControlEventCallable
 from flet.core.control import Control
@@ -19,9 +19,10 @@ class FletFlipCard(ConstrainedControl):
         initial_side: Optional[str] = FlipCardSide.FRONT,
         front: Optional[Control] = None,
         back: Optional[Control] = None,
-        on_flip_done: OptionalControlEventCallable = None
+        on_flip_done: OptionalControlEventCallable = None,
+        **kwargs: Any
     ):
-        ConstrainedControl.__init__(self)
+        super().__init__(**kwargs)
         self.direction = direction
         self.duration = duration
         self.initial_side = initial_side
