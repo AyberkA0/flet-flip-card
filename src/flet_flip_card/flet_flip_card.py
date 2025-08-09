@@ -35,6 +35,7 @@ class FletFlipCard(ConstrainedControl):
     
     def get_side(self):
         return FlipCardSide.FRONT if self.showing_front else FlipCardSide.BACK
+    
 
     @property
     def direction(self) -> Optional[str]:
@@ -67,6 +68,10 @@ class FletFlipCard(ConstrainedControl):
                 f"Invalid initial side '{value}'. Use FlipCardSide.FRONT or FlipCardSide.BACK."
             )
         self._set_attr("initialSide", value)
+
+    def before_update(self):
+        super().before_update()
+        self._set_attr("hasOnFlipDone", self.on_flip_done is not None)
 
     @property
     def on_flip_done(self) -> OptionalControlEventCallable:
