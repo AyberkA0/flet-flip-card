@@ -36,7 +36,6 @@ class FletFlipCard(ConstrainedControl):
     def get_side(self):
         return FlipCardSide.FRONT if self.showing_front else FlipCardSide.BACK
     
-
     @property
     def direction(self) -> Optional[str]:
         return self._get_attr("direction")
