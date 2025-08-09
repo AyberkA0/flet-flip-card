@@ -27,10 +27,6 @@ def main(page: ft.Page):
 
     status = ft.Text("Current side: BACK (initial)")
 
-    def show_snack(msg: str):
-        page.snack_bar = ft.SnackBar(ft.Text(msg), open=True)
-        page.update()
-
     def on_flip_done(e: ft.ControlEvent):
         side = e.data.upper()
         status.value = f"Current side: {side}"
