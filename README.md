@@ -21,6 +21,8 @@ When running your app without building the extension using `flet build ...`,
 you will **only see an error box** instead of the actual flip card widget.  
 To see the real widget, you must build the extension for your target platform.
 
+**You should use flet.Container as parent for best experience.**
+
 ---
 
 ## 📦 Installation
