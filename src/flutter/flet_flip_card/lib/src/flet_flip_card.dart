@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flet/flet.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
@@ -106,18 +105,26 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
       )!;
     }
 
+    final String? dirStr = widget.control.attrString("direction", "horizontal");
+    final FlipDirection direction =
+        dirStr == "vertical" ? FlipDirection.VERTICAL : FlipDirection.HORIZONTAL;
+
+    final int speed = widget.control.attrInt("speed", 400) ?? 400;
+
     final card = FlipCard(
       key: _flipKey,
-      direction: FlipDirection.HORIZONTAL,
+      direction: direction,
       flipOnTouch: true,
-      speed: 400,
+      speed: speed,
       onFlipDone: (isFront) {
         _showingFront = isFront;
-        widget.backend.triggerControlEvent(
-          widget.control.id,
-          "flipped",
-          isFront ? "front" : "back",
-        );
+        if (widget.control.attrBool("hasOnFlipDone", false) ?? false) {
+          widget.backend.triggerControlEvent(
+            widget.control.id,
+            "flip_done",
+            isFront ? "front" : "back",
+          );
+        }
       },
       front: front,
       back: back,
