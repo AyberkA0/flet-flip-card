@@ -127,6 +127,5 @@ If you want to contribute or test locally:
 ## 📌 Notes
 
 * Built for **Flet 0.28.3**
-* Minimal parameters — only `front` and `back` controls are required
 * Works on **Web**, **Desktop**, and **Mobile**
 * Simple API for quick prototyping
