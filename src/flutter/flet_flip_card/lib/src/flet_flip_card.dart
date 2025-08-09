@@ -27,11 +27,16 @@ class FletFlipCardControl extends StatefulWidget {
 
 class _FletFlipCardControlState extends State<FletFlipCardControl> {
   final GlobalKey<FlipCardState> _flipKey = GlobalKey<FlipCardState>();
-  bool _showingFront = true;
+  late bool _showingFront;
 
   @override
   void initState() {
     super.initState();
+
+    final String? initialSide =
+        widget.control.attrString("initialSide", "front");
+    _showingFront = initialSide != "back";
+
     widget.backend.subscribeMethods(widget.control.id, _onMethodCall);
   }
 
@@ -61,6 +66,7 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null) {
       st.toggleCard();
+      _showingFront = !_showingFront;
     }
   }
 
@@ -68,6 +74,7 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null && _showingFront) {
       st.toggleCard();
+      _showingFront = false;
     }
   }
 
@@ -75,6 +82,7 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null && !_showingFront) {
       st.toggleCard();
+      _showingFront = true;
     }
   }
 
@@ -116,11 +124,10 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
 
     final int speed = widget.control.attrInt("speed", 400) ?? 400;
 
-    final String? initialSide = widget.control.attrString("initialSide", "front");
-    final CardSide side = initialSide == "back" ? CardSide.BACK : CardSide.FRONT;
-    if (side == CardSide.BACK) {
-      _showingFront = false;
-    }
+    final String? initialSide =
+        widget.control.attrString("initialSide", "front");
+    final CardSide side =
+        initialSide == "back" ? CardSide.BACK : CardSide.FRONT;
 
     final card = FlipCard(
       key: _flipKey,
