@@ -12,7 +12,7 @@ class FletFlipCard(ConstrainedControl):
         self,
         show_front: Optional[bool] = True,
         direction: Optional[str] = FlipCardDirection.HORIZONTAL,
-        speed: OptionalNumber = 500,  # milliseconds
+        duration: OptionalNumber = 500,  # milliseconds
         front: Optional[Control] = None,
         back: Optional[Control] = None,
         on_flip_done: OptionalControlEventCallable = None
@@ -20,7 +20,7 @@ class FletFlipCard(ConstrainedControl):
         ConstrainedControl.__init__(self)
         self.show_front = show_front
         self.direction = direction
-        self.speed = speed
+        self.duration = duration
         self.front = front
         self.back = back
         self.on_flip_done = on_flip_done
@@ -49,11 +49,11 @@ class FletFlipCard(ConstrainedControl):
         self._set_attr("direction", value)
 
     @property
-    def speed(self) -> OptionalNumber:
+    def duration(self) -> OptionalNumber:
         return self._get_attr("speed", data_type="float")
 
-    @speed.setter
-    def speed(self, value: OptionalNumber):
+    @duration.setter
+    def duration(self, value: OptionalNumber):
         self._set_attr("speed", value)
 
     @property

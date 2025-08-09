@@ -63,14 +63,14 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     }
   }
 
-  void _showFront() {
+  void _showBack() {
     final st = _flipKey.currentState;
     if (st != null && !_showingFront) {
       st.toggleCard();
     }
   }
 
-  void _showBack() {
+  void _showFront() {
     final st = _flipKey.currentState;
     if (st != null && _showingFront) {
       st.toggleCard();
@@ -117,7 +117,7 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
       flipOnTouch: true,
       speed: speed,
       onFlipDone: (isFront) {
-        _showingFront = isFront; 
+        _showingFront = isFront;
         if (widget.control.attrBool("hasOnFlipDone", false) ?? false) {
           widget.backend.triggerControlEvent(
             widget.control.id,
