@@ -27,15 +27,10 @@ class FletFlipCardControl extends StatefulWidget {
 
 class _FletFlipCardControlState extends State<FletFlipCardControl> {
   final GlobalKey<FlipCardState> _flipKey = GlobalKey<FlipCardState>();
-  late bool _showingFront;
 
   @override
   void initState() {
     super.initState();
-
-    final String? initialSide =
-        widget.control.attrString("initialSide", "front");
-    _showingFront = initialSide != "back";
 
     widget.backend.subscribeMethods(widget.control.id, _onMethodCall);
   }
@@ -48,16 +43,8 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
 
   Future<String?> _onMethodCall(
       String methodName, Map<String, String> args) async {
-    switch (methodName) {
-      case "flip":
-        _toggle();
-        break;
-      case "show_front":
-        _showFront();
-        break;
-      case "show_back":
-        _showBack();
-        break;
+    if (methodName == "flip") {
+      _toggle();
     }
     return null;
   }
@@ -66,23 +53,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
     final st = _flipKey.currentState;
     if (st != null) {
       st.toggleCard();
-      _showingFront = !_showingFront;
-    }
-  }
-
-  void _showBack() {
-    final st = _flipKey.currentState;
-    if (st != null && _showingFront) {
-      st.toggleCard();
-      _showingFront = false;
-    }
-  }
-
-  void _showFront() {
-    final st = _flipKey.currentState;
-    if (st != null && !_showingFront) {
-      st.toggleCard();
-      _showingFront = true;
     }
   }
 
@@ -136,7 +106,6 @@ class _FletFlipCardControlState extends State<FletFlipCardControl> {
       speed: speed,
       side: side,
       onFlipDone: (isFront) {
-        _showingFront = isFront;
         if (widget.control.attrBool("hasOnFlipDone", false) ?? false) {
           widget.backend.triggerControlEvent(
             widget.control.id,

@@ -7,7 +7,7 @@ class FlipCardDirection:
     HORIZONTAL = "horizontal"
     VERTICAL = "vertical"
 
-class FlipCardInitialSide:
+class FlipCardSide:
     FRONT = "front"
     BACK = "back"
 
@@ -16,7 +16,7 @@ class FletFlipCard(ConstrainedControl):
         self,
         direction: Optional[str] = FlipCardDirection.HORIZONTAL,
         duration: OptionalNumber = 500,  # milliseconds
-        initial_side: Optional[str] = FlipCardInitialSide.FRONT,
+        initial_side: Optional[str] = FlipCardSide.FRONT,
         front: Optional[Control] = None,
         back: Optional[Control] = None,
         on_flip_done: OptionalControlEventCallable = None
@@ -28,9 +28,13 @@ class FletFlipCard(ConstrainedControl):
         self.front = front
         self.back = back
         self.on_flip_done = on_flip_done
+        self.showing_front = True if self.initial_side == FlipCardSide.FRONT else False
 
     def _get_control_name(self):
         return "flet_flip_card"
+    
+    def get_side(self):
+        return FlipCardSide.FRONT if self.showing_front else FlipCardSide.BACK
 
     @property
     def direction(self) -> Optional[str]:
@@ -58,9 +62,9 @@ class FletFlipCard(ConstrainedControl):
 
     @initial_side.setter
     def initial_side(self, value: Optional[str]):
-        if value not in (FlipCardInitialSide.FRONT, FlipCardInitialSide.BACK):
+        if value not in (FlipCardSide.FRONT, FlipCardSide.BACK):
             raise ValueError(
-                f"Invalid initial side '{value}'. Use FlipCardInitialSide.FRONT or FlipCardInitialSide.BACK."
+                f"Invalid initial side '{value}'. Use FlipCardSide.FRONT or FlipCardSide.BACK."
             )
         self._set_attr("initialSide", value)
 
@@ -84,9 +88,12 @@ class FletFlipCard(ConstrainedControl):
 
     def flip(self):
         self.invoke_method("flip")
+        self.showing_front = not self.showing_front
 
     def show_front(self):
-        self.invoke_method("show_front")
+        if not self.showing_front:
+            self.flip()
 
     def show_back(self):
-        self.invoke_method("show_back")
+        if self.showing_front:
+            self.flip()
