@@ -18,7 +18,7 @@ A simple and lightweight **Flip Card** extension for [Flet](https://flet.dev), a
 
 ## ⚠️ Important Note
 When running your app without building the extension using `flet build ...`,  
-you will **only see a placeholder** instead of the actual flip card widget.  
+you will **only see an error box** instead of the actual flip card widget.  
 To see the real widget, you must build the extension for your target platform.
 
 ---
@@ -49,34 +49,71 @@ dependencies = [
 
 ```python
 import flet as ft
-from flet_flip_card import FletFlipCard
+from flet_flip_card import FlipCard, FlipCardDirection, FlipCardSide
 
 def main(page: ft.Page):
-    page.title = "Flet Flip Card Example"
-    page.vertical_alignment = "center"
-    page.horizontal_alignment = "center"
+    page.title = "FlipCard Example"
+    page.padding = 20
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
 
-    flip_card = FletFlipCard(
-        front=ft.Container(
-            width=200,
-            height=200,
-            bgcolor=ft.Colors.BLUE,
-            alignment=ft.alignment.center,
-            content=ft.Text("Front", color=ft.Colors.WHITE, size=24)
-        ),
-        back=ft.Container(
-            width=200,
-            height=200,
-            bgcolor=ft.Colors.RED,
-            alignment=ft.alignment.center,
-            content=ft.Text("Back", color=ft.Colors.WHITE, size=24)
-        ),
-        duration=500
+    front = ft.Container(
+        width=260,
+        height=160,
+        bgcolor=ft.Colors.BLUE_200,
+        border_radius=12,
+        alignment=ft.alignment.center,
+        content=ft.Text("FRONT", size=28, weight=ft.FontWeight.BOLD),
     )
 
-    page.add(flip_card)
+    back = ft.Container(
+        width=260,
+        height=160,
+        bgcolor=ft.Colors.AMBER_200,
+        border_radius=12,
+        alignment=ft.alignment.center,
+        content=ft.Text("BACK", size=28, weight=ft.FontWeight.BOLD),
+    )
 
-ft.app(target=main)
+    status = ft.Text("Current side: BACK (initial)")
+
+    def show_snack(msg: str):
+        page.snack_bar = ft.SnackBar(ft.Text(msg), open=True)
+        page.update()
+
+    def on_flip_done(e: ft.ControlEvent):
+        side = e.data.upper()
+        status.value = f"Current side: {side}"
+        page.update()
+
+    flip_card = FlipCard(
+        front=front,
+        back=back,
+        duration=500,             
+        direction=FlipCardDirection.VERTICAL, 
+        initial_side=FlipCardSide.BACK,
+        on_flip_done=on_flip_done,
+    )
+
+    btn_flip = ft.ElevatedButton(
+        "Flip",
+        on_click=lambda _: flip_card.flip()
+    )
+
+    page.add(
+        ft.Column(
+            [
+                flip_card,
+                ft.Row([btn_flip], alignment=ft.MainAxisAlignment.CENTER),
+                status,
+            ],
+            spacing=16,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+    )
+
+if __name__ == "__main__":
+    ft.app(target=main)
 ```
 
 ---
