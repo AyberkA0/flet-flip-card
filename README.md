@@ -9,8 +9,9 @@ A simple and lightweight **Flip Card** extension for [Flet](https://flet.dev), a
 ## ✨ Features
 - **Front & Back** card faces
 - **Horizontal** and **Vertical** flip directions
-- **Custom flip speed**
-- **Programmatic control**: flip, show front side, show back side
+- **Initial card side support** 
+- **Custom flip duration**
+- **Programmatic control**: flip, show_front, show_back
 - **Flip event callback** (`on_flip_done`)
 
 ---
@@ -30,13 +31,16 @@ Install directly from GitHub:
 pip install git+https://github.com/AyberkAtalay0/flet-flip-card.git
 ````
 
-Or add it to your **`pyproject.toml`**:
+And add it to your **`pyproject.toml`**:
 
 ```toml
-[tool.poetry.dependencies]
-python = "^3.9"
-flet = ">=0.28.3"
-flet-flip-card = { git = "https://github.com/AyberkAtalay0/flet-flip-card.git" }
+[project]
+...
+dependencies = [
+  "flet==0.28.3",
+  "flet-flip-card @ git+https://github.com/AyberkAtalay0/flet-flip-card",
+  ...
+]
 ```
 
 ---
@@ -66,7 +70,8 @@ def main(page: ft.Page):
             bgcolor=ft.Colors.RED,
             alignment=ft.alignment.center,
             content=ft.Text("Back", color=ft.Colors.WHITE, size=24)
-        )
+        ),
+        duration=500
     )
 
     page.add(flip_card)
