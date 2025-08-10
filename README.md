@@ -2,7 +2,7 @@
 
 A simple and lightweight **Flip Card** extension for [Flet](https://flet.dev), allowing you to create animated cards with **front** and **back** faces that flip smoothly.
 
-![Demo](https://github.com/AyberkAtalay0/flet-flip-card/raw/main/examples/demo.gif)
+![Demo](https://github.com/AyberkA0/flet-flip-card/raw/main/examples/demo.gif)
 
 ---
 
