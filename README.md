@@ -30,7 +30,7 @@ To see the real widget, you must build the extension for your target platform.
 Install directly from GitHub:
 
 ```bash
-pip install git+https://github.com/AyberkAtalay0/flet-flip-card.git
+pip install git+https://github.com/AyberkA0/flet-flip-card.git
 ````
 
 And add it to your **`pyproject.toml`**:
@@ -40,7 +40,7 @@ And add it to your **`pyproject.toml`**:
 ...
 dependencies = [
   "flet==0.28.3",
-  "flet-flip-card @ git+https://github.com/AyberkAtalay0/flet-flip-card",
+  "flet-flip-card @ git+https://github.com/AyberkA0/flet-flip-card",
   ...
 ]
 ```
