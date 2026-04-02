@@ -1,3 +1,7 @@
+> [!NOTE]
+> Built for Flet `0.28.3`
+> Works on MacOS, Linux, and Mobile (camera access may vary by platform/permissions)
+
 # 🎴 Flet Flip Card Extension
 
 A simple and lightweight **Flip Card** extension for [Flet](https://flet.dev), allowing you to create animated cards with **front** and **back** faces that flip smoothly.
@@ -157,10 +161,3 @@ If you want to contribute or test locally:
    flet run
    ```
 
----
-
-## 📌 Notes
-
-* Built for **Flet 0.28.3**
-* Works on **Web**, **Desktop**, and **Mobile**
-* Simple API for quick prototyping
