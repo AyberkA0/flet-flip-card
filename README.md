@@ -1,5 +1,5 @@
 > [!NOTE]
-> Built for Flet `0.28.3`
+> **Updated (v0.2.0):** Rewritten for the new Flet extension architecture. Now built for Flet `0.86.5+` (previously `0.28.3`).
 > Works on MacOS, Linux, and Mobile (camera access may vary by platform/permissions)
 
 # 🎴 Flet Flip Card Extension
@@ -15,7 +15,7 @@ A simple and lightweight **Flip Card** extension for [Flet](https://flet.dev), a
 - **Horizontal** and **Vertical** flip directions
 - **Initial card side support** 
 - **Custom flip duration**
-- **Programmatic control**: flip, show_front, show_back
+- **Programmatic control**: toggle, show_front, show_back
 - **Flip event callback** (`on_flip_done`)
 
 ---
@@ -43,7 +43,7 @@ And add it to your **`pyproject.toml`**:
 [project]
 ...
 dependencies = [
-  "flet==0.28.3",
+  "flet>=0.86.5",
   "flet-flip-card @ git+https://github.com/AyberkA0/flet-flip-card",
   ...
 ]
@@ -97,10 +97,10 @@ def main(page: ft.Page):
         on_flip_done=on_flip_done,
     )
 
-    btn_flip = ft.ElevatedButton(
-        "Flip",
-        on_click=lambda _: flip_card.flip()
-    )
+    async def on_flip_click(e):
+        await flip_card.toggle()
+
+    btn_flip = ft.ElevatedButton("Flip", on_click=on_flip_click)
 
     page.add(
         ft.Column(

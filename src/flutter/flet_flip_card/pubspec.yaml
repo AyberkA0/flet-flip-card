@@ -1,21 +1,21 @@
 name: flet_flip_card
-description: Flet FletFlipCard control
-repository: https://github.com/MyGithubAccount/flet-flip-card/src/flutter/flet_flip_card
-version: 0.1.0
-homepage: https://github.com/MyGithubAccount/flet-flip-card
+description: Flet FlipCard control — flips a card between a front and back side.
+version: 0.2.0
+repository: https://github.com/AyberkA0/flet-flip-card
+homepage: https://github.com/AyberkA0/flet-flip-card
+publish_to: none
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
-  flet: 0.28.3
-  flip_card: ^0.7.0
   flutter:
     sdk: flutter
+  flet: ^0.86.5
+  flip_card: ^0.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  

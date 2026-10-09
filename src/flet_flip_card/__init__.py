@@ -1,3 +1,3 @@
-from flet_flip_card.flet_flip_card import FletFlipCard as FlipCard, FlipCardDirection, FlipCardSide
+from flet_flip_card.flip_card import FlipCard, FlipCardDirection, FlipCardSide
 
 __all__ = ["FlipCard", "FlipCardDirection", "FlipCardSide"]

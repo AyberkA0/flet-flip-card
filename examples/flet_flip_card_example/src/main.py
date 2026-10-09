@@ -1,6 +1,7 @@
 import flet as ft
 from flet_flip_card import FlipCard, FlipCardDirection, FlipCardSide
 
+
 def main(page: ft.Page):
     page.title = "FlipCard Example"
     page.padding = 20
@@ -28,23 +29,22 @@ def main(page: ft.Page):
     status = ft.Text("Current side: BACK (initial)")
 
     def on_flip_done(e: ft.ControlEvent):
-        side = e.data.upper()
-        status.value = f"Current side: {side}"
+        status.value = f"Current side: {e.data.upper()}"
         page.update()
 
     flip_card = FlipCard(
         front=front,
         back=back,
-        duration=500,             
-        direction=FlipCardDirection.VERTICAL, 
+        duration=500,
+        direction=FlipCardDirection.VERTICAL,
         initial_side=FlipCardSide.BACK,
         on_flip_done=on_flip_done,
     )
 
-    btn_flip = ft.ElevatedButton(
-        "Flip",
-        on_click=lambda _: flip_card.flip()
-    )
+    async def on_flip_click(e):
+        await flip_card.toggle()
+
+    btn_flip = ft.ElevatedButton("Flip", on_click=on_flip_click)
 
     page.add(
         ft.Column(
@@ -58,5 +58,5 @@ def main(page: ft.Page):
         )
     )
 
-if __name__ == "__main__":
-    ft.app(target=main)
+
+ft.app(target=main)
