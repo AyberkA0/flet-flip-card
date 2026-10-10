@@ -1,6 +1,6 @@
 > [!NOTE]
 > **Updated (v0.2.0):** Rewritten for the new Flet extension architecture. Now built for Flet `0.86.5+` (previously `0.28.3`).
-> Works on MacOS, Linux, and Mobile (camera access may vary by platform/permissions)
+> Works on MacOS, Linux, and Mobile
 
 # 🎴 Flet Flip Card Extension
 
